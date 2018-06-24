@@ -3,7 +3,7 @@ cd /usr/local/bin/letsencrypt
 sudo ./letsencrypt-auto certonly --email admin@threedegreesapp.com --debug --standalone -d api.threedegreesapp.com
 cd ~
 . ./load-env.sh
-sudo openssl pkcs12 -export -out threedegrees-keystore.p12 -inkey /etc/letsencrypt/live/api.threedegreesapp.com/privkey.pem -in /etc/letsencrypt/live/api.threedegreesapp.com/fullchain.pem -password env:SSL_PASSWORD
+echo $SSL_PASSWORD | sudo openssl pkcs12 -export -out threedegrees-keystore.p12 -inkey /etc/letsencrypt/live/api.threedegreesapp.com/privkey.pem -in /etc/letsencrypt/live/api.threedegreesapp.com/fullchain.pem -password stdin
 sudo chown ec2-user:ec2-user threedegrees-keystore.p12
 keytool -importkeystore -destkeystore threedegrees-keystore.jks -srcstoretype PKCS12 -srckeystore threedegrees-keystore.p12 -srcstorepass $SSL_PASSWORD -deststorepass $SSL_PASSWORD -noprompt
 kill `ps aux | grep svc-threedegrees | grep -v grep | awk -F ' ' '{print $2}'`
